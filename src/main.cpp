@@ -23,10 +23,16 @@ For a C++ project simply rename the file to .cpp and re-run the build script
 --  3. This notice may not be removed or altered from any source distribution.
 
 */
+#include <iostream>
 
 #include "raylib.h"
 
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
+
+struct Pellet{
+	Vector2 position;
+	int size;
+};
 
 int main ()
 {
@@ -46,13 +52,15 @@ int main ()
 	Color pellet_color = YELLOW;
 	int max_pellets = 2;
 
-	int snake_position [2] = {0,0};
-	int pellets[max_pellets][2] = {};
-	for(int i=0;i<max_pellets; i++){
-		for(int j = 0; j < 2; j++){
-			pellets[i][j] = 0;
-		}
+	int snake_position [2] = {0,0}; // Setting the snake position. TODO:Center the positioning of the snake
+	
+	Pellet pellets[max_pellets];
+	for(int i=0; i<max_pellets; i++){
+		pellets[i].position = {0,0};
+		pellets[i].size = 20;
+		std::cout << std::to_string(pellets[i]);
 	}
+
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
