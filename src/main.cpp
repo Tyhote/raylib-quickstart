@@ -1,27 +1,7 @@
 #include <iostream>
+#include <unordered_map>
 #include "raylib.h"
 #include "resource_dir.h"	
-
-class Pellet {
-	public:
-		int GetID();
-		int[] GetLocation();
-		void Move();
-		~Pellet();
-	
-	private:
-		int ID;
-		int location [];
-
-};
-
-int Pellet::GetID(){
-	
-}
-
-int[] Pellet::GetLocation(){
-	return &self.location;
-}
 
 struct Pellet{
 	Vector2 position;
@@ -40,7 +20,7 @@ int main ()
 	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
 	SearchAndSetResourceDir("resources");
 	
-	enum Direction { up, down, left, right };
+	enum Direction { up, down, left, right, none };
 
 		
 	Color ground_color = WHITE; 
@@ -48,28 +28,49 @@ int main ()
 	Color pellet_color = YELLOW;
 	int max_pellets = 2;
 	int max_segments = 10;
+	int snake_size = 20;
+	Direction snake_direction = Direction.left;
 
-	int snake_position [2] = {0,0}; // Setting the snake position. TODO:Center the positioning of the snake
+	int snake_head_position [2] = {screen_res[0]/2,screen_res[1]/2};
 	
-	Pellet pellets[max_pellets];
+	std::unordered_map<int,Pellet> pellets;
 	for(int i=0; i<max_pellets; i++){
 		pellets[i].position = {0,0};
 		pellets[i].size = 20;
-		std::cout << std::to_string(pellets[i]);
+		std::cout << std::to_string(pellets[i].size);
 	}
 
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
+		int keypress;
+		Direction new_direction = Direction.none;
+		do {
+			keypress = GetKeyPressed();
+		}
+		// Getting input to move the snake, discards all but the most recent input
+		while(keypress != 0){
+			switch(keypress){
+				case 37:
+					snake_direction = Direction.left;
+					break;
+				case 38:
+					snake_direction = Direction.up;
+					break;
+				case 39:
+					snake_direction = Direction.right;
+					break;
+				case 40:
+					snake_direction = Direction.down;
+					break;
+			}
+		}
+		
 		// drawing
 		BeginDrawing();
-
 		// Setup the backbuffer for drawing (clear color and depth buffers)
 		ClearBackground(ground_color);
-		
-		DrawRectangle(0,0,20,20,snake_color);
-		DrawRectangle(20,0,20,20,pellet_color);
-		// draw our texture to the screen
-		
+		// Drawing the snake
+		DrawRectangle(snake_head_position[0],snake_head_position[1],snake_size,snake_size,snake_color);
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
