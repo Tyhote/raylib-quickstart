@@ -3,6 +3,8 @@
 #include "raylib.h"
 #include "resource_dir.h"	
 
+enum Direction {up, down, left, right, no};
+
 struct Pellet{
 	Vector2 position;
 	int size;
@@ -11,10 +13,14 @@ struct Pellet{
 struct Snake{
 	Vector2 position;
 	int size;
+	int (*segments)[2];
 	float speed;
+	Direction direction = no;
 };
 
-void UpdateSnake(Snake *snake, Pellet *pellets, int numPellets, float delta);
+
+void UpdateSnake(Snake *snake, int numSegments , Pellet *pellets, int numPellets, float delta);
+Direction GetDirection(Direction currentDirection);
 
 int main ()
 {
@@ -34,25 +40,31 @@ int main ()
 	Color pellet_color = YELLOW;
 	int max_pellets = 2;
 	int max_segments = 10;
-	Snake snake;
+	Snake *snake = new Snake();
 
-	snake.position = {screen_res[0]/2,screen_res[1]/2};
-	snake.size = 20;
-	std::unordered_map<int,Pellet> pellets;
-	for(int i=0; i<max_pellets; i++){
-		pellets[i].position = {0,0};
-		pellets[i].size = 20;
-		std::cout << std::to_string(pellets[i].size);
-	}
+	snake->position = {screen_res[0]/2,screen_res[1]/2};
+	snake->size = 20;
+	snake->segments = new int[max_segments][2];
+	snake->speed = 80;
+	snake->direction = no;
+
+	Pellet pellet_arr[max_pellets];
+	Pellet *pellets = pellets;
+	int num_pellets = 0;
+	int num_segments = 0;
 
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
+		snake->direction = GetDirection(snake->direction);
+		float deltaTime = GetFrameTime();
+
 		// drawing
 		BeginDrawing();
 		// Setup the backbuffer for drawing (clear color and depth buffers)
 		ClearBackground(ground_color);
 		// Drawing the snake
-		DrawRectangle(snake.position.x,snake.position.y,snake.size,snake.size,snake_color);
+		UpdateSnake(snake,num_segments,pellets,num_pellets,deltaTime);
+		DrawRectangle(snake->position.x,snake->position.y,snake->size,snake->size,snake_color);
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
@@ -60,8 +72,22 @@ int main ()
 	// Destroy the window and cleanup the OpenGL context
 	CloseWindow();
 	return 0;
+	// Delete any dynamically allocated memory
+	delete snake;
 }
 
-void UpdateSnake(Snake *snake, Pellet *pellets, int numPellets, float delta){
-	if(IsKeyDown(KEY_LEFT)) snake->position.x -= snake->speed*delta;
+void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets, float delta){
+	if(snake->direction == left) snake->position.x -= snake->speed*delta;
+	if(snake->direction == right) snake->position.x += snake->speed*delta;
+	if(snake->direction == up) snake->position.y -= snake->speed*delta;
+	if(snake->direction == down) snake->position.y += snake->speed*delta;
+}
+
+Direction GetDirection(Direction currentDirection){
+	if(IsKeyDown(KEY_LEFT) && currentDirection != right) return left;
+	if(IsKeyDown(KEY_RIGHT) && currentDirection != left) return right;
+	if(IsKeyDown(KEY_UP) && currentDirection != down) return up;
+	if(IsKeyDown(KEY_DOWN) && currentDirection != up) return down;
+	// No keys pressed, direction should stay the same
+	return currentDirection;
 }
