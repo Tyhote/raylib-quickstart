@@ -13,7 +13,9 @@ struct Pellet{
 struct Snake{
 	Vector2 position;
 	int size;
-	int (*segments)[2];
+	int segments;
+	int (*turns)[2];
+
 	float speed;
 	Direction direction = no;
 };
