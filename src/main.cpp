@@ -1,7 +1,9 @@
 #include <iostream>
 #include <unordered_map>
 #include "raylib.h"
-#include "resource_dir.h"	
+#include "resource_dir.h"
+
+#define MAX_SEGMENTS 10
 
 enum Direction {up, down, left, right, no};
 
@@ -46,7 +48,7 @@ int main ()
 
 	snake->position = {screen_res[0]/2,screen_res[1]/2};
 	snake->size = 20;
-	snake->segments = new int[max_segments][2];
+	snake->segments = 0;
 	snake->speed = 80;
 	snake->direction = no;
 
@@ -79,10 +81,15 @@ int main ()
 }
 
 void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets, float delta){
+	if(snake->direction == no) return;
 	if(snake->direction == left) snake->position.x -= snake->speed*delta;
 	if(snake->direction == right) snake->position.x += snake->speed*delta;
 	if(snake->direction == up) snake->position.y -= snake->speed*delta;
 	if(snake->direction == down) snake->position.y += snake->speed*delta;
+}
+
+void Collision(Snake *snake, Pellet *pellets){
+	
 }
 
 Direction GetDirection(Direction currentDirection){
