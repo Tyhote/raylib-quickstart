@@ -87,7 +87,7 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	snake->direction = GetDirection(prev_direction);
 	
 	// Get time passed since last frame
-	float deltaTime = GetFrameTime();
+	float delta = GetFrameTime();
 
 	// If the player has turned the snake, store the point at which the player turned
 	if(prev_direction != snake->direction){
@@ -107,7 +107,8 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	// Now we propagate back from the turning points
 	for(int i = 0; i < snake->turns; i++){
 		// Find the distance we need to span for each length of the snake
-		
+		Vector2 end = snake->tp[i];
+		if(end.x < start.x) // Moving left
 		// Within line we place as many segments as possible
 
 	}
