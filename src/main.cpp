@@ -104,11 +104,29 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	if(snake->direction == down) snake->position.y += snake->speed*delta;
 
 	Vector2 start = snake->position;
+	// Getting the space needed for each snake segment
+	int seg_space = snake->size * 1.5;
 	// Now we propagate back from the turning points
 	for(int i = 0; i < snake->turns; i++){
 		// Find the distance we need to span for each length of the snake
 		Vector2 end = snake->tp[i];
-		if(end.x < start.x) // Moving left
+		if(end.x < start.x){ // Moving to the left
+			for(int distance = start.x - end.x; distance > seg_space; distance-seg_space){
+
+			}
+		} else if(end.x > start.x){ // Moving to the right
+			for(int distance = end.x - start.x; distance > seg_space; distance-seg_space){
+			
+			}
+		} else if(end.y < start.y){ // Moving up
+			for(int distance = start.y - end.y; distance > seg_space; distance-seg_space){
+			
+			}
+		} else if(end.y > start.y){ // Moving down
+			for(int distance = end.y - start.y; distance > seg_space; distance-seg_space){
+			
+			}
+		}
 		// Within line we place as many segments as possible
 
 	}
