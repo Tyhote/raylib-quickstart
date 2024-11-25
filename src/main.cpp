@@ -5,6 +5,7 @@
 
 #define MAX_SEGMENTS 10
 #define MAX_TURNS 2000
+#define SNAKE_SIZE 20
 
 enum Direction {up, down, left, right, no};
 
@@ -49,7 +50,7 @@ int main ()
 	Snake *snake = new Snake();
 
 	snake->position = {screen_res[0]/2,screen_res[1]/2};
-	snake->size = 20;	// TODO: Ensure this is even because the space between segments is always half the size of the snake
+	snake->size = SNAKE_SIZE;	// TODO: Ensure this is even because the space between segments is always half the size of the snake
 	snake->segments = 0;
 	snake->turns = 0;
 	snake->speed = 80;
@@ -103,35 +104,25 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	if(snake->direction == down) snake->position.y += snake->speed*delta;
 	
 	// Drawing the head of the snake
-	DrawRectangle(snake->position.x,snake->position.y,snake->size,snake->size,snake_color);
+	DrawRectangle(snake->position.x,snake->position.y,snake->size,snake->size,GREEN);
 	// And propagating the segments, starting from the head
 	Vector2 start = snake->position;
+	//	to the first turning point
+	Vector2 end = snake->turns > 0 ? snake->tp[0] : Vector2{-1,-1};
 	// Getting the space needed for each snake segment
 	int seg_space = snake->size * 1.5;
-	// And the number of segments to prop
-	int segments = snake->segments;
-	// Now we propagate back toward the turning points
-	for(int i = 0; i < snake->turns; i++){
-		// Find the distance we need to span for each length of the snake
-		Vector2 end = snake->tp[i];
+	// Now we propagate back toward the turning points until no segments remain
+	for(int i = 0; i < snake->segments; i++){
 		if(end.x < start.x){ // Moving to the left
-			// If room
-			start.x = (distance > seg_space) ? start.x - seg_space : start.x;
-			for(int distance = start.x - end.x; distance > seg_space; distance-seg_space){
-				
-			}
+		
 		} else if(end.x > start.x){ // Moving to the right
-			for(int distance = end.x - start.x; distance > seg_space; distance-seg_space){
-			
-			}
+
 		} else if(end.y < start.y){ // Moving up
-			for(int distance = start.y - end.y; distance > seg_space; distance-seg_space){
-			
-			}
+		
 		} else if(end.y > start.y){ // Moving down
-			for(int distance = end.y - start.y; distance > seg_space; distance-seg_space){
-			
-			}
+
+		} else { // Row is filled
+
 		}
 		// Within line we place as many segments as possible
 
