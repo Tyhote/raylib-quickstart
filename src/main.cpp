@@ -49,7 +49,7 @@ int main ()
 	Snake *snake = new Snake();
 
 	snake->position = {screen_res[0]/2,screen_res[1]/2};
-	snake->size = 20;
+	snake->size = 20;	// TODO: Ensure this is even because the space between segments is always half the size of the snake
 	snake->segments = 0;
 	snake->turns = 0;
 	snake->speed = 80;
@@ -68,7 +68,6 @@ int main ()
 		ClearBackground(ground_color);
 		// Drawing the snake
 		UpdateSnake(snake,num_segments,pellets,num_pellets);
-		DrawRectangle(snake->position.x,snake->position.y,snake->size,snake->size,snake_color);
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
@@ -102,17 +101,24 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	if(snake->direction == right) snake->position.x += snake->speed*delta;
 	if(snake->direction == up) snake->position.y -= snake->speed*delta;
 	if(snake->direction == down) snake->position.y += snake->speed*delta;
-
+	
+	// Drawing the head of the snake
+	DrawRectangle(snake->position.x,snake->position.y,snake->size,snake->size,snake_color);
+	// And propagating the segments, starting from the head
 	Vector2 start = snake->position;
 	// Getting the space needed for each snake segment
 	int seg_space = snake->size * 1.5;
-	// Now we propagate back from the turning points
+	// And the number of segments to prop
+	int segments = snake->segments;
+	// Now we propagate back toward the turning points
 	for(int i = 0; i < snake->turns; i++){
 		// Find the distance we need to span for each length of the snake
 		Vector2 end = snake->tp[i];
 		if(end.x < start.x){ // Moving to the left
+			// If room
+			start.x = (distance > seg_space) ? start.x - seg_space : start.x;
 			for(int distance = start.x - end.x; distance > seg_space; distance-seg_space){
-
+				
 			}
 		} else if(end.x > start.x){ // Moving to the right
 			for(int distance = end.x - start.x; distance > seg_space; distance-seg_space){
