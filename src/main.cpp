@@ -113,17 +113,31 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	int seg_space = snake->size * 1.5;
 	// Now we propagate back toward the turning points until no segments remain
 	for(int i = 0; i < snake->segments; i++){
+		int distance;
 		if(end.x < start.x){ // Moving to the left
-		
+			distance = start.x - end.x;
+			if(distance < seg_spage){
+				
+			}
 		} else if(end.x > start.x){ // Moving to the right
-
+			distance = end.x - start.x;
+			if(distance < seg_spage){
+				
+			}
 		} else if(end.y < start.y){ // Moving up
-		
+			distance = start.y - end.y;
+			if(distance < seg_spage){
+				
+			}
 		} else if(end.y > start.y){ // Moving down
-
-		} else { // Row is filled
-
+			distance = end.y - start.y;
+			if(distance < seg_spage){
+				
+			}
+		} else { // Row is filled exactly
+			distance = 0;
 		}
+
 		// Within line we place as many segments as possible
 
 	}
