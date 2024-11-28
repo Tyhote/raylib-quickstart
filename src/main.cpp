@@ -116,22 +116,22 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 		int distance;
 		if(end.x < start.x){ // Moving to the left
 			distance = start.x - end.x;
-			if(distance < seg_spage){
+			if(distance < seg_space){
 				
 			}
 		} else if(end.x > start.x){ // Moving to the right
 			distance = end.x - start.x;
-			if(distance < seg_spage){
+			if(distance < seg_space){
 				
 			}
 		} else if(end.y < start.y){ // Moving up
 			distance = start.y - end.y;
-			if(distance < seg_spage){
+			if(distance < seg_space){
 				
 			}
 		} else if(end.y > start.y){ // Moving down
 			distance = end.y - start.y;
-			if(distance < seg_spage){
+			if(distance < seg_space){
 				
 			}
 		} else { // Row is filled exactly
