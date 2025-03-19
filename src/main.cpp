@@ -3,9 +3,10 @@
 #include "raylib.h"
 #include "resource_dir.h"
 
-#define MAX_SEGMENTS 10
+#define MAX_SEGMENTS 100
 #define MAX_TURNS 2000
 #define SNAKE_SIZE 20
+#define MAX_PELLETS 10
 
 enum Direction {up, down, left, right, no};
 
@@ -45,7 +46,7 @@ int main ()
 	Color ground_color = WHITE; 
 	Color snake_color = GREEN;
 	Color pellet_color = YELLOW;
-	int max_pellets = 2;
+	int max_pellets = MAX_PELLETS;
 	int max_segments = MAX_SEGMENTS;
 	Snake *snake = new Snake();
 
@@ -55,11 +56,9 @@ int main ()
 	snake->turns = 0;
 	snake->speed = 80;
 	snake->direction = no;
-
 	Pellet pellet_arr[max_pellets];
-	Pellet *pellets = pellets;
+	Pellet* pellets = pellet_arr;
 	int num_pellets = 0;
-	int num_segments = 0;
 
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
@@ -67,8 +66,10 @@ int main ()
 		BeginDrawing();
 		// Setup the backbuffer for drawing (clear color and depth buffers)
 		ClearBackground(ground_color);
+		// Check for collisions
+		CheckCollisions();
 		// Drawing the snake
-		UpdateSnake(snake,num_segments,pellets,num_pellets);
+		UpdateSnake(snake,snake->segments,pellets,num_pellets);
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
@@ -108,37 +109,53 @@ void UpdateSnake(Snake *snake, int numSegments, Pellet *pellets, int numPellets)
 	// And propagating the segments, starting from the head
 	Vector2 start = snake->position;
 	//	to the first turning point
-	Vector2 end = snake->turns > 0 ? snake->tp[0] : Vector2{-1,-1};
+	Vector2 end;
 	// Getting the space needed for each snake segment
 	int seg_space = snake->size * 1.5;
-	// Now we propagate back toward the turning points until no segments remain
+	// Now we propagate back toward the turning points until no segments or turning points remain, in order
 	for(int i = 0; i < snake->segments; i++){
+		start = i < 1 ? snake->position : snake->tp[i-1];
+		end = snake->turns > i ? snake->tp[i] : Vector2{-1,-1}; // Getting the respective turning point
+		if(end.x == -1 and end.y == -1) break; // Exit the segment filling loop since no turning points exist.
 		int distance;
+		int direction = -1;
 		if(end.x < start.x){ // Moving to the left
 			distance = start.x - end.x;
-			if(distance < seg_space){
-				
-			}
+			direction = left;
 		} else if(end.x > start.x){ // Moving to the right
 			distance = end.x - start.x;
-			if(distance < seg_space){
-				
-			}
+			direction = right;
 		} else if(end.y < start.y){ // Moving up
 			distance = start.y - end.y;
-			if(distance < seg_space){
-				
-			}
+			direction = up;
 		} else if(end.y > start.y){ // Moving down
 			distance = end.y - start.y;
-			if(distance < seg_space){
-				
-			}
+			direction = down;
 		} else { // Row is filled exactly
 			distance = 0;
 		}
-
+		if(distance < seg_space) continue;
 		// Within line we place as many segments as possible
+		while(distance >= seg_space){
+			switch(direction){
+				case(up):
+					start.y -= seg_space;
+					break;
+				case(down):
+					start.y += seg_space;
+					break;
+				case(left):
+					start.x -= seg_space;
+					break;
+				case(right):
+					start.x += seg_space;
+					break;
+				default:
+					break;
+			}
+			DrawRectangle(start.x, start.y, snake->size, snake->size, GREEN);
+			distance -= seg_space; // Subtract the new segment length from 
+		}
 
 	}
 }
@@ -150,4 +167,8 @@ Direction GetDirection(Direction currentDirection){
 	if(IsKeyDown(KEY_DOWN) && currentDirection != up) return down;
 	// No keys pressed, direction should stay the same
 	return currentDirection;
+}
+
+void CheckCollision(Snake snake, Pellet pellets){
+	
 }
