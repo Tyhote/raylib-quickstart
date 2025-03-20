@@ -28,6 +28,7 @@ struct Snake{
 
 
 void UpdateSnake(Snake *snake, int numSegments , Pellet *pellets, int numPellets);
+void CheckCollision(Snake* snake, Pellet* pellets);
 Direction GetDirection(Direction currentDirection);
 
 int main ()
@@ -67,7 +68,7 @@ int main ()
 		// Setup the backbuffer for drawing (clear color and depth buffers)
 		ClearBackground(ground_color);
 		// Check for collisions
-		CheckCollisions();
+		CheckCollision(snake, pellets);
 		// Drawing the snake
 		UpdateSnake(snake,snake->segments,pellets,num_pellets);
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
@@ -169,6 +170,6 @@ Direction GetDirection(Direction currentDirection){
 	return currentDirection;
 }
 
-void CheckCollision(Snake snake, Pellet pellets){
-	
+void CheckCollision(Snake* snake, Pellet* pellets){
+
 }
